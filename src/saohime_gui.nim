@@ -1,9 +1,14 @@
 import
-  pkg/saohime
+  pkg/saohime,
+  saohime_gui/[components, systems]
 
 type
   GUIPlugin* = ref object
 
 proc build*(plugin: GUIPlugin, world: World) =
-  discard
+  world.registerSystemsAt("update", changeButtonColor)
+
+export
+  components,
+  systems
 
