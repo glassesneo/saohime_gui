@@ -6,9 +6,8 @@ import
 proc setup(renderer: Resource[Renderer]) {.system.} =
   let buttonSize = Vector.new(50f, 50f)
   commands.create()
-    .ButtonBundle(
+    .NormalButtonBundle(
       size = buttonSize,
-      style = renderer.createButtonColors(size = buttonSize),
     )
     .attach(Transform.new(x = 5, y = 5))
 

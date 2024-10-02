@@ -1,5 +1,6 @@
 import
   std/colors,
+  std/importutils,
   pkg/seiryu,
   pkg/saohime,
   pkg/saohime/default_plugins
@@ -13,47 +14,55 @@ type
   Widget* = ref object
     sensitive*: bool
 
-  Button* = ref object
-    size*: Vector
+  NormalButton* = ref object
 
   ButtonStyle* = ref object
     normal*, hover*, down*: Texture
 
 proc new*(T: type Widget; sensitive = true): T {.construct.}
 
-proc new*(T: type Button; size: Vector): T {.construct.}
+proc new*(T: type NormalButton): T {.construct.}
 
 proc new*(T: type ButtonStyle; normal, hover, down: Texture): T {.construct.}
 
-proc createButtonColors*(
+proc createButtonStyle*(
     renderer: Renderer;
-    normal = DefaultNormalColor;
-    hover = DefaultHoverColor;
-    down = DefaultDownColor;
-    size: Vector
+    size: Vector;
+    normalColor, hoverColor, downColor: SaohimeColor
 ): ButtonStyle =
   result = ButtonStyle.new(
-    renderer.createRectangleTexture(normal, size),
-    renderer.createRectangleTexture(hover, size),
-    renderer.createRectangleTexture(down, size)
+    renderer.createRectangleTexture(normalColor, size),
+    renderer.createRectangleTexture(hoverColor, size),
+    renderer.createRectangleTexture(downColor, size)
   )
 
-proc ButtonBundle*(
+proc NormalButtonBundle*(
     entity: Entity;
     size: Vector;
     sensitive = true;
-    style: ButtonStyle;
+    normalColor = DefaultNormalColor;
+    hoverColor = DefaultHoverColor;
+    downColor = DefaultDownColor;
     renderingOrder = 0
 ): Entity {.discardable.} =
+  privateAccess(Entity)
+  let renderer = entity.world.getResource(Renderer)
+  let buttonStyle = renderer.createButtonStyle(
+    size,
+    normalColor,
+    hoverColor,
+    downColor,
+  )
+
   return entity.withBundle((
-    Texture.new(style.normal.texture),
+    Texture.new(buttonStyle.normal.texture),
     Renderable.new(
       srcPosition = ZeroVector,
       srcSize = size,
       renderingOrder = renderingOrder
     ),
     Widget.new(sensitive),
-    Button.new(size),
-    style
+    NormalButton.new(),
+    buttonStyle
   ))
 

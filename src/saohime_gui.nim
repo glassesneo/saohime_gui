@@ -6,7 +6,7 @@ type
   GUIPlugin* = ref object
 
 proc build*(plugin: GUIPlugin, world: World) =
-  world.registerSystemsAt("update", changeButtonColor)
+  world.registerSystemsAt("update", changeNormalButtonColor)
 
 export
   components,
