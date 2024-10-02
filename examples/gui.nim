@@ -11,6 +11,13 @@ proc setup(renderer: Resource[Renderer]) {.system.} =
     )
     .attach(Transform.new(x = 5, y = 5))
 
+  commands.create()
+    .NormalButtonBundle(
+      size = buttonSize,
+      # sensitive = false,
+    )
+    .attach(Transform.new(x = 250, y = 100))
+
 proc pollEvent(appEvent: Event[ApplicationEvent]) {.system.} =
   for e in appEvent:
     let app = commands.getResource(Application)
